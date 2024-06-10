@@ -1,16 +1,22 @@
 #ifndef GEN_H
 #define GEN_H
+#include <cstddef>
+#include <ostream>
 #pragma once
 #include <iostream>
 using namespace std;
 
-template<typename T> class vect {
+template<class T> class vect {
     private:
         int size;
         T* data;
+        friend ostream& operator<<(ostream& os, const vect<int>& obj);
     public:
         vect();
+        vect(int size);
+        vect(int size, T start);
         vect(vect<T> &b);
+        vect(vect<T> &&b);
         ~vect();
         int getsize();
         T& operator[](int index);
@@ -19,25 +25,88 @@ template<typename T> class vect {
         void insert(int index, T val);
         void remove(int index);
         void print();
+        vect<T> operator+(vect<T>);
+        vect<T> operator*(vect<T>);
+        vect<T> operator+=(vect<T>);
+        vect<T> operator-=(vect<T>);
+        vect<T> operator*=(int);
+        bool operator<(vect<T>&);
+        bool operator>(vect<T>&);
+        bool operator==(vect<T>&);
+        bool operator>=(vect<T>&);
+        bool operator<=(vect<T>&);
+        vect<T> operator=(vect<T>&);
+        vect<T> operator=(vect<T>&&);
 };
+template <class T>
+ostream& operator<<(ostream& os, vect<T>& obj) {
+    for (int i =0; i<obj.getsize(); i++) {
+        os<<obj[i]<<' ';
+    }
+    return os;
+}
 
-template <typename T>
+template <class T>
+vect<T> vect<T>::operator=(vect<T>& tmp) {
+    delete this->data;
+    size = tmp.size;
+    data = new T[size];
+    for (int i = 0; i< size; i++) {
+        data[i] = tmp.data[i];
+    }
+}
+
+
+template<class T>
+vect<T> vect<T>::operator+(vect<T> b) {
+    vect<T> c(b.size+size);
+    for (int i = 0; i<size; i++) {
+        c[i] = data[i];
+    }
+    for (int i = 0; i<b.size; i++) {
+        c[i+size-1] = b[i];
+    }
+    return c;
+}
+
+template<class T>
+bool vect<T>::operator<(vect<T>& b) {
+    return (size < b.size) ? true : false;
+}
+template<class T>
+bool vect<T>::operator>(vect<T>& b) {
+    return (size > b.size) ? true : false;
+}
+template<class T>
+bool vect<T>::operator==(vect<T>& b) {
+    return (size == b.size) ? true : false;
+}
+template<class T>
+bool vect<T>::operator<=(vect<T>& b) {
+    return (size <= b.size) ? true : false;
+}
+template<class T>
+bool vect<T>::operator>=(vect<T>& b) {
+    return (size >= b.size) ? true : false;
+}
+
+template <class T>
 int vect<T>::getsize() {
     return this->size;
 }
 
-template <typename T>
+template <class T>
 T& vect<T>::operator[](int index) {
     return data[index];
 }
 
-template <typename T>
+template <class T>
 vect<T>::vect() {
     size=0;
     data = new T[size];
 }
 
-template <typename T>
+template <class T>
 vect<T>::vect(vect<T> &b) {
     size = b.getsize();
     data = new T[size];
@@ -47,12 +116,25 @@ vect<T>::vect(vect<T> &b) {
     }
 }
 
-template <typename T>
+template <class T>
+vect<T>::vect(int size) {
+    this->size = size;
+    data = new T[size];
+}
+
+template <class T>
 vect<T>::~vect(){
     delete[] data; 
 }
 
-template <typename T>
+template <class T>
+vect<T>::vect(vect<T>&& tmp) : data(tmp.data), size(tmp.size) {
+    tmp.data = nullptr;
+    tmp.size = 0;
+}
+
+
+template <class T>
 void vect<T>::push_back(T val) {
     T* tmp = new T[size + 1];
     for (int i=0; i<size; i++) {
@@ -64,7 +146,7 @@ void vect<T>::push_back(T val) {
     data = tmp;
 }
 
-template <typename T>
+template <class T>
 T vect<T>::pop_back() {
     T* tmp= new T[size -1];
     for (int i=0; i<size-1; i++) {
@@ -77,7 +159,7 @@ T vect<T>::pop_back() {
     return pop_obj;
 }
 
-template <typename T>
+template <class T>
 void vect<T>::insert(int index, T val) {
     T* tmp = new T[size +1];
     for (int i =0;i<size+1; i++){
@@ -93,7 +175,7 @@ void vect<T>::insert(int index, T val) {
     size++;
 }
 
-template <typename T>
+template <class T>
 void vect<T>::remove(int index) {
     T* tmp = new T[size -1];
     for (int i=0;i<size;i++) {
@@ -108,7 +190,7 @@ void vect<T>::remove(int index) {
 }
 
 
-template <typename T>
+template <class T>
 void vect<T>::print() {
     for (int i=0; i<size; i++) {
         cout<<data[i]<<" ";
