@@ -64,6 +64,8 @@ int main() {
     Array<point, 5> y;
     y.set(0, point(1,2));
     y.print();
+
+    Array<point, 3> z = std::move(x);
     
     /* vect<test> a; */
     /* a.push_back(test(4)); */

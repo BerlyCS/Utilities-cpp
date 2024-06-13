@@ -1,5 +1,6 @@
 #ifndef GEN_STATIC_ARRAY_H
 #define GEN_STATIC_ARRAY_H
+#include <bits/fs_fwd.h>
 #pragma once
 
 #include <iostream>
@@ -20,6 +21,8 @@ class Array {
         int getsize();
         void print();
         T& operator[](int index);
+        void operator=(Array<T, SIZE>&);
+        void operator=(Array<T, SIZE>&&);
         bool operator<(Array<T, SIZE>&);
         bool operator>(Array<T, SIZE>&);
         bool operator==(Array<T, SIZE>&);
@@ -59,6 +62,12 @@ T& Array<T,SIZE>::operator[](int index) {
     return data[index];
 }
 
+template <class T, int SIZE>
+void Array<T,SIZE>::operator=(Array<T, SIZE>&& other) {
+    delete data;
+    data = other.data;
+    other.data = nullptr;
+}
 
 template<class T, int SIZE>
 bool Array<T,SIZE>::operator<(Array<T, SIZE>& b) {
