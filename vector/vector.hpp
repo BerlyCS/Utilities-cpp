@@ -1,6 +1,5 @@
 #ifndef GEN_H
 #define GEN_H
-#include <cstddef>
 #include <ostream>
 #pragma once
 #include <iostream>
@@ -89,7 +88,7 @@ ostream& operator<<(ostream& os, vect<T>& obj) {
 
 template <class T>
 void vect<T>::operator=(vect<T>& tmp) {
-    delete this->data;
+    delete[] this->data;
     size = tmp.size;
     data = new T[size];
     for (int i = 0; i< size; i++) {
@@ -100,7 +99,7 @@ void vect<T>::operator=(vect<T>& tmp) {
 template <class T>
 void vect<T>::operator=(vect<T>&& tmp)
 {
-    delete this->data;
+    delete[] this->data;
     data = tmp.data, size = tmp.size;  
     tmp.size = 0;
     tmp.data = nullptr;
